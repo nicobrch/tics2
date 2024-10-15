@@ -84,7 +84,7 @@ export async function loginAction(_prev: ActionResult, formData: FormData): Prom
   const session = await createSession(sessionToken, user.id);
   setSessionTokenCookie(sessionToken, session.expiresAt);
 
-  return redirect("/");
+  return redirect("/dashboard");
 }
 
 export async function signupAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
