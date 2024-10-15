@@ -7,22 +7,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {LogoutButton} from "@/components/actions/logout-button";
+import {LogoutButton} from "@/components/auth/logout-button";
 
-export type UserNavProps = {
-  user: {
-    name: string
-    email: string
-  } | null
+const user = {
+  name: 'Fundacion',
+  email: 'fundacion@mail.com'
 }
 
-export default function UserNav({user}: UserNavProps) {
-  if (!user) {
-    user = {
-      name: 'Fundacion',
-      email: 'fundacion@mail.com'
-    }
-  }
+export default function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -1,7 +1,5 @@
 import React from "react";
 import Navbar from "@/components/navigation/navbar";
-import { getCurrentSession } from "@/auth/cookies";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
@@ -18,10 +16,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { session, user } = await getCurrentSession();
-  if (session === null) {
-    return redirect("/login");
-  }
 
   return (
     <html lang="en">
@@ -29,7 +23,7 @@ export default async function RootLayout({
       className={`${inter.className} antialiased`}
     >
     <section>
-      <Navbar user={user}/>
+      <Navbar/>
     </section>
     <main>{children}</main>
     </body>

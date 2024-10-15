@@ -1,8 +1,7 @@
 import MainNav from "@/components/navigation/main-nav";
 import UserNav from "@/components/navigation/user-nav";
-import { UserNavProps } from "@/components/navigation/user-nav";
 
-export default function Navbar({user}: UserNavProps) {
+export default function Navbar() {
 
   return (
     <div className="hidden flex-col md:flex">
@@ -11,7 +10,7 @@ export default function Navbar({user}: UserNavProps) {
 
           <MainNav/>
           <div className="ml-auto flex items-center space-x-4">
-            <UserNav user={user}/>
+            <UserNav/>
           </div>
         </div>
       </div>

@@ -1,15 +1,18 @@
-import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/auth/cookies";
-import LoginForm from "@/components/actions/login-form";
+import LoginForm from "@/components/auth/login-form";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 
 export default async function Page() {
-  const { session } = await getCurrentSession();
-  if (session !== null) {
-    return redirect("/");
-  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <LoginForm />
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardDescription>Enter your credentials to access your account.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LoginForm />
+        </CardContent>
+      </Card>
     </div>
   );
 }
