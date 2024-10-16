@@ -1,7 +1,8 @@
-import { LogoutButton } from "@/components/auth/logout-button";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import StatisticsCards from "@/components/dashboard/statistics-cards";
+import TicketsTable from "@/components/dashboard/tickets-table";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -10,12 +11,20 @@ export default async function Home() {
   if (!session) {
     return redirect("/login");
   }
+
+  const data = await fetch("http://localhost:3000/api/tickets");
+  const tickets = await data.json();
+
   return (
-    <div className="p-4">
-      <h1 className="font-bold text-3xl mb-2">
-        Hello, {session.user.name}!
-      </h1>
-      <LogoutButton />
+    <div className="flex-1 p-4 md:p-6">
+      <section>
+        <h1 className="font-bold text-3xl mb-4"> Estadísticas </h1>
+        <StatisticsCards tickets={tickets}/>
+      </section>
+      <section>
+        <h1 className="font-bold text-3xl mb-4"> Tickets </h1>
+        <TicketsTable tickets={tickets}/>
+      </section>
     </div>
   );
 }

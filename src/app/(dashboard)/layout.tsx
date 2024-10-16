@@ -20,7 +20,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
     <body
-      className={`${inter.className} antialiased`}
+      className={`${inter.className} bg-primary-foreground antialiased`}
     >
     <section>
       <Navbar/>
