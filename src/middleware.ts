@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export default authMiddleware({
   customRedirect: async (session, request) => {
     const baseURL = request.nextUrl.origin;
-    if (request.nextUrl.pathname === "/login" && session) {
+    if ((request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup") && session) {
       return NextResponse.redirect(new URL("/", baseURL));
     }
     if (request.nextUrl.pathname === "/" && !session) {
@@ -15,5 +15,5 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: ["/dashboard", "/sign-in"],
+  matcher: ["/", "/login", "/signup"],
 };
