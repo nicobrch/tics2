@@ -1,7 +1,8 @@
 import React from "react";
 import Navbar from "@/components/navigation/navbar";
-import type { Metadata } from "next";
+import type {Metadata, Viewport} from "next";
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider"
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
 
 const inter = Inter({ subsets : ['latin'] });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -19,14 +27,21 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-    <body
-      className={`${inter.className} bg-primary-foreground antialiased`}
-    >
-    <section>
-      <Navbar/>
-    </section>
-    <main>{children}</main>
-    </body>
+      <body
+        className={`${inter.className} bg-primary-foreground antialiased`}
+      >
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <section>
+          <Navbar/>
+        </section>
+        <main className="container mx-auto">{children}</main>
+      </ThemeProvider>
+      </body>
     </html>
   )
 }
