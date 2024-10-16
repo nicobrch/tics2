@@ -29,19 +29,21 @@ export default function TicketsTable({ tickets }: TicketsTableProps) {
     return (
       ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (statusFilter === "All" || ticket.status === statusFilter) &&
+      (priorityFilter === "All" || ticket.priority === priorityFilter) ||
+      ticket.assignee.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (statusFilter === "All" || ticket.status === statusFilter) &&
       (priorityFilter === "All" || ticket.priority === priorityFilter)
     )
   })
 
   return (
     <Card className="space-y-4 p-4">
-      <div className="flex flex-col gap-4 xs:flex-row">
-        <div className="flex-1">
+      <div className="flex flex-wrap gap-4 xs:flex-row">
+        <div className="flex-grow max-w-md">
           <Input
             placeholder="Search tickets..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>

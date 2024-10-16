@@ -6,7 +6,7 @@ export default function Navbar() {
   return (
     <div className="hidden flex-col bg-background md:flex">
       <div className="border-b">
-        <div className="flex h-16 items-center px-4">
+        <div className="flex h-16 items-center px-4 container mx-auto">
           <MainNav/>
           <div className="ml-auto flex items-center space-x-4">
             <UserNav/>
