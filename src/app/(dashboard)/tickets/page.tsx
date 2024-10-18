@@ -19,10 +19,10 @@ export default async function Home() {
 
   return (
     <div className="flex-1 p-4 md:p-6">
-    <section>
-    <h1 className="font-bold text-3xl mb-4"> Tickets </h1>
-      <TicketsTable tickets={tickets} users={users}/>
-    </section>
-  </div>
+      <section>
+      <h1 className="font-bold text-3xl mb-4"> Tickets </h1>
+        <TicketsTable tickets={tickets} users={users}/>
+      </section>
+    </div>
 );
 }
