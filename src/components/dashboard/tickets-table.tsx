@@ -5,6 +5,11 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {Badge} from "@/components/ui/badge";
 import {useState} from "react";
 import {Card} from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+import {Plus} from "lucide-react";
+import NewTicketDialog from "@/components/dashboard/new-ticket-dialog";
+import type {InferSelectModel} from "drizzle-orm";
+import {user} from "@/db/schema";
 
 type Ticket = {
   id: number
@@ -16,10 +21,11 @@ type Ticket = {
 }
 
 type TicketsTableProps = {
-  tickets: Ticket[]
+  tickets: Ticket[],
+  users: InferSelectModel<typeof user>[]
 }
 
-export default function TicketsTable({ tickets }: TicketsTableProps) {
+export default function TicketsTable({ tickets, users }: TicketsTableProps) {
 
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("All")
@@ -68,6 +74,11 @@ export default function TicketsTable({ tickets }: TicketsTableProps) {
             <SelectItem value="Low">Low</SelectItem>
           </SelectContent>
         </Select>
+        <NewTicketDialog users={users}>
+          <Button>
+            <Plus className="mr-2 h-4 w-4"/> New Ticket
+          </Button>
+        </NewTicketDialog>
       </div>
       <Table>
         <TableHeader>
