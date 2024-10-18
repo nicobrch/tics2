@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, char } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -8,6 +8,16 @@ export const user = pgTable("user", {
   image: text('image'),
   createdAt: timestamp('createdAt').notNull(),
   updatedAt: timestamp('updatedAt').notNull()
+});
+
+export const tickets = pgTable("tickets", {
+  id: text("id").primaryKey(),
+  title: text('name').notNull(),
+  status: text('status').notNull(),
+  priority: text('status').notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  userId: text('userId').notNull().references(()=> user.id)
 });
 
 export const session = pgTable("session", {
