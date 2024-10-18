@@ -14,6 +14,7 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {Button} from "@/components/ui/button";
 import {type InferSelectModel} from "drizzle-orm";
 import {user} from "@/db/schema";
+import { createTicket } from "@/actions/tickets"
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
@@ -29,11 +30,6 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
   const [priority, setPriority] = useState("");
   const [assignee, setAssignee] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ name, status, priority, assignee });
-  }
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -44,14 +40,14 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
           <DialogTitle>New Ticket</DialogTitle>
           <DialogDescription>Create a new ticket manually.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form action={createTicket}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
               <Input
-                id="name"
+                name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="col-span-3"
@@ -61,7 +57,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Status
               </Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select value={status} onValueChange={setStatus} name="status">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select status"/>
                 </SelectTrigger>
@@ -76,7 +72,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Priority
               </Label>
-              <Select value={priority} onValueChange={setPriority}>
+              <Select value={priority} onValueChange={setPriority} name="priority">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select priority"/>
                 </SelectTrigger>
@@ -91,7 +87,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Assignee
               </Label>
-              <Select value={assignee} onValueChange={setAssignee}>
+              <Select value={assignee} onValueChange={setAssignee} name="assignee">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select assignee"/>
                 </SelectTrigger>
