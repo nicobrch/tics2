@@ -2,11 +2,12 @@
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Tooltip, TooltipContent, TooltipTrigger, TooltipProvider} from "@/components/ui/tooltip";
 import {Badge} from "@/components/ui/badge";
 import {useState} from "react";
 import {Card} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
-import {Plus} from "lucide-react";
+import {FileText, Pencil, Plus, Trash2} from "lucide-react";
 import NewTicketDialog from "@/components/dashboard/new-ticket-dialog";
 import type {InferSelectModel} from "drizzle-orm";
 import {user} from "@/db/schema";
@@ -89,11 +90,12 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
             <TableHead>Priority</TableHead>
             <TableHead>Assignee</TableHead>
             <TableHead>Created</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredTickets.map((ticket) => (
-            <TableRow key={ticket.id}>
+            <TableRow key={ticket.id} className="text-lg">
               <TableCell>{ticket.id}</TableCell>
               <TableCell>{ticket.title}</TableCell>
               <TableCell>
@@ -123,7 +125,35 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
                 </Badge>
               </TableCell>
               <TableCell>{ticket.assignee}</TableCell>
-              <TableCell>{ticket.created}</TableCell>
+              <TableCell>{ticket.created.split('T')[0]}</TableCell>
+              <TableCell>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild className="mr-2">
+                      <Button size="icon" className="h-7 w-7">
+                        <FileText className="h-5 w-5"/>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View Ticket</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild className="mr-2">
+                      <Button size="icon" className="h-7 w-7">
+                        <Pencil className="h-5 w-5"/>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit Ticket</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" className="h-7 w-7" variant="destructive">
+                        <Trash2 className="h-5 w-5"/>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Delete Ticket</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

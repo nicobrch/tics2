@@ -12,13 +12,12 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
-import {type InferSelectModel} from "drizzle-orm";
 import {user} from "@/db/schema";
 import { createTicket } from "@/actions/tickets"
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
-  users: InferSelectModel<typeof user>[]
+  users: typeof user.$inferSelect[]
 }
 
 const TicketStatus = [ "Open", "In Progress", "Closed"];
@@ -94,7 +93,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
                 <SelectContent>
                   <SelectGroup>
                     {users.map((user, index) => (
-                      <SelectItem key={index} value={user.name}> {user.name} </SelectItem>
+                      <SelectItem key={index} value={user.id}> {user.name} </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
