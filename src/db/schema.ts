@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, char } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -11,10 +11,10 @@ export const user = pgTable("user", {
 });
 
 export const tickets = pgTable("tickets", {
-  id: text("id").primaryKey(),
-  title: text('name').notNull(),
+  id: serial("id").primaryKey(),
+  title: text('title').notNull(),
   status: text('status').notNull(),
-  priority: text('status').notNull(),
+  priority: text('priority').notNull(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   userId: text('userId').notNull().references(()=> user.id)

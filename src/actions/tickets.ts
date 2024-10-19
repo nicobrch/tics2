@@ -1,12 +1,21 @@
 "use server"
+import { db } from "@/db"
+import { tickets } from "@/db/schema"
 
 export async function createTicket(formData: FormData) {
-  const rawFormData = {
-    name: formData.get('name'),
-    status: formData.get('status'),
-    priority: formData.get('priority'),
-    assignee: formData.get('assignee'),
+  const title = formData.get('name');
+  const status = formData.get('status');
+  const priority = formData.get('priority');
+  const userId = formData.get('assignee');
+
+  if (!title || !status || !priority || !userId) {
+    throw new Error("Missing required fields");
   }
 
-  console.log("Creating ticket", { rawFormData});
+  await db.insert(tickets).values({
+    title: title.toString(),
+    status: status.toString(),
+    priority: priority.toString(),
+    userId: userId.toString(),
+  });
 }
