@@ -1,159 +1,75 @@
-import { pgTable, foreignKey, text, timestamp, serial, bigint, unique, boolean, varchar } from "drizzle-orm/pg-core"
-
-
-
-
-export const session = pgTable("session", {
-	id: text().primaryKey().notNull(),
-	expiresAt: timestamp({ mode: 'string' }).notNull(),
-	ipAddress: text(),
-	userAgent: text(),
-	userId: text().notNull(),
-},
-(table) => {
-	return {
-		sessionUserIdUserIdFk: foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "session_userId_user_id_fk"
-		}),
-	}
-});
-
-export const tickets = pgTable("tickets", {
-	id: serial().primaryKey().notNull(),
-	title: text().notNull(),
-	createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
-	updatedAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
-	userId: text().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	categoryId: bigint({ mode: "number" }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	stateId: bigint({ mode: "number" }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	slaId: bigint({ mode: "number" }),
-},
-(table) => {
-	return {
-		ticketsCategoryIdFkey: foreignKey({
-			columns: [table.categoryId],
-			foreignColumns: [categories.id],
-			name: "tickets_categoryId_fkey"
-		}).onUpdate("cascade").onDelete("set null"),
-		ticketsSlaIdFkey: foreignKey({
-			columns: [table.slaId],
-			foreignColumns: [sla.id],
-			name: "tickets_slaId_fkey"
-		}).onUpdate("cascade").onDelete("set null"),
-		ticketsStateIdFkey: foreignKey({
-			columns: [table.stateId],
-			foreignColumns: [states.id],
-			name: "tickets_stateId_fkey"
-		}).onUpdate("cascade").onDelete("set null"),
-		ticketsUserIdFkey: foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "tickets_userId_fkey"
-		}).onUpdate("cascade").onDelete("set null"),
-	}
-});
+import { pgTable, text, timestamp, serial, integer, boolean} from "drizzle-orm/pg-core"
 
 export const user = pgTable("user", {
-	id: text().primaryKey().notNull(),
-	name: text().notNull(),
-	email: text().notNull(),
-	emailVerified: boolean().notNull(),
-	image: text(),
-	createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
-	updatedAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	phone: bigint({ mode: "number" }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	roleId: bigint({ mode: "number" }),
-},
-(table) => {
-	return {
-		userRoleIdFkey: foreignKey({
-			columns: [table.roleId],
-			foreignColumns: [roles.id],
-			name: "user_roleId_fkey"
-		}).onUpdate("cascade").onDelete("set null"),
-		userEmailUnique: unique("user_email_unique").on(table.email),
-	}
+	id: text("id").primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	emailVerified: boolean('emailVerified').notNull(),
+	image: text('image'),
+	phone: integer("phone"),
+	roleId: integer("roleId").notNull().references(() => roles.id),
+	createdAt: timestamp('createdAt').notNull(),
+	updatedAt: timestamp('updatedAt').notNull()
 });
 
-export const verification = pgTable("verification", {
-	id: text().primaryKey().notNull(),
-	identifier: text().notNull(),
-	value: text().notNull(),
-	expiresAt: timestamp({ mode: 'string' }).notNull(),
+export const session = pgTable("session", {
+	id: text("id").primaryKey(),
+	expiresAt: timestamp('expiresAt').notNull(),
+	ipAddress: text('ipAddress'),
+	userAgent: text('userAgent'),
+	userId: text('userId').notNull().references(()=> user.id)
 });
 
 export const account = pgTable("account", {
-	id: text().primaryKey().notNull(),
-	accountId: text().notNull(),
-	providerId: text().notNull(),
-	userId: text().notNull(),
-	accessToken: text(),
-	refreshToken: text(),
-	idToken: text(),
-	expiresAt: timestamp({ mode: 'string' }),
-	password: text(),
-},
-(table) => {
-	return {
-		accountUserIdUserIdFk: foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: "account_userId_user_id_fk"
-		}),
-	}
+	id: text("id").primaryKey(),
+	accountId: text('accountId').notNull(),
+	providerId: text('providerId').notNull(),
+	userId: text('userId').notNull().references(()=> user.id),
+	accessToken: text('accessToken'),
+	refreshToken: text('refreshToken'),
+	idToken: text('idToken'),
+	expiresAt: timestamp('expiresAt'),
+	password: text('password')
+});
+
+export const verification = pgTable("verification", {
+	id: text("id").primaryKey(),
+	identifier: text('identifier').notNull(),
+	value: text('value').notNull(),
+	expiresAt: timestamp('expiresAt').notNull()
+});
+
+export const tickets = pgTable("tickets", {
+	id: serial("id").primaryKey(),
+	title: text("title").notNull(),
+	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updatedAt", { mode: 'string' }).defaultNow().notNull(),
+	userId: text("userId").notNull(),
+	categoryId: integer("categoryId").notNull().references(() => categories.id),
+	stateId: integer("stateId").notNull().references(() => states.id),
+	slaId: integer("slaId").notNull().references(() => sla.id),
 });
 
 export const roles = pgTable("roles", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "roles_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	name: varchar().notNull(),
-},
-(table) => {
-	return {
-		rolesNameKey: unique("roles_name_key").on(table.name),
-	}
+	id: serial("id").primaryKey(),
+	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
+	name: text("name").notNull(),
 });
 
 export const categories = pgTable("categories", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "categories_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	name: varchar().notNull(),
-},
-(table) => {
-	return {
-		categoriesNameKey: unique("categories_name_key").on(table.name),
-	}
-});
-
-export const states = pgTable("states", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "states_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	name: varchar().notNull(),
-},
-(table) => {
-	return {
-		statesNameKey: unique("states_name_key").on(table.name),
-	}
+	id: serial("id").primaryKey(),
+	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
+	name: text("name").notNull(),
 });
 
 export const sla = pgTable("sla", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity({ name: "SLA_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807 }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	name: varchar().notNull(),
-},
-(table) => {
-	return {
-		slaNameKey: unique("SLA_name_key").on(table.name),
-	}
+	id: serial("id").primaryKey(),
+	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
+	name: text("name").notNull(),
+});
+
+export const states = pgTable("states", {
+	id: serial("id").primaryKey(),
+	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
+	name: text("name").notNull(),
 });
