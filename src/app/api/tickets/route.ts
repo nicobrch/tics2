@@ -19,8 +19,8 @@ export async function GET() {
     .from(tickets)
     .leftJoin(user, eq(tickets.userId, user.id))
     .leftJoin(states, eq(tickets.stateId, states.id))
-    .leftJoin(categories, eq(tickets.categoryId, categories))
-    .leftJoin(sla, eq(tickets.slaId, sla));
+    .leftJoin(categories, eq(tickets.categoryId, categories.id))
+    .leftJoin(sla, eq(tickets.slaId, sla.id));
   return Response.json(ticket);
 }
 
