@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "@/lib/auth-client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
@@ -11,12 +11,14 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     await signIn.email({
       email: email,
       password: password,
     }, {
-      onRequest: (ctx) => {
+      onRequest: () => {
         //show loading
       },
       onSuccess: () => {
@@ -29,12 +31,13 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSignIn}>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
           type="text"
           placeholder="Enter your email"
+          name={"email"}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -45,12 +48,13 @@ export default function LoginForm() {
         <Input
           type="password"
           placeholder="Enter your password"
+          name={"password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
       </div>
-      <Button className="w-full" onClick={handleSignIn}>Log in</Button>
-    </div>
+      <Button className="w-full" type="submit">Log in</Button>
+    </form>
   )
 }
