@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "push": "npx drizzle-kit push",
-    "studio": "npx drizzle-kit studio --verbose",
+    "db-pull": "npx drizzle-kit pull",
+    "db-push": "npx drizzle-kit push",
+    "db-studio": "npx drizzle-kit studio --verbose",
     "lint": "next lint"
   },
   "dependencies": {
