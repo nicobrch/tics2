@@ -29,6 +29,17 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
   const [stateFilter, setstateFilter] = useState("Estado")
   const [slaFilter, setSlaFilter] = useState("SLA")
 
+  const badgeVariant = (input: string) => {
+    if(input === "SLA Bajo" || input === "Abierto") {
+      return "success"
+    } else if (input === "SLA Medio" || input === "En Progreso") {
+      return "warning"
+    } else if (input === "SLA Alto" || input === "Cerrado") {
+      return "destructive"
+    }
+    return "default";
+  }
+
   const filteredTickets = tickets.filter((ticket) => {
     return (
       ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -95,10 +106,10 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
               <TableCell>{ticket.id}</TableCell>
               <TableCell>{ticket.title}</TableCell>
               <TableCell>
-                <Badge>{ticket.state}</Badge>
+                <Badge variant={badgeVariant(ticket.state)}>{ticket.state}</Badge>
               </TableCell>
               <TableCell>
-                <Badge>{ticket.sla}</Badge>
+                <Badge variant={badgeVariant(ticket.sla)}>{ticket.sla}</Badge>
               </TableCell>
               <TableCell>{ticket.category}</TableCell>
               <TableCell>{ticket.assignee}</TableCell>
@@ -115,7 +126,7 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild className="mr-2">
-                      <Button size="icon" className="h-6 w-6">
+                      <Button size="icon" className="h-6 w-6" variant="calm">
                         <Pencil className="h-4 w-4"/>
                       </Button>
                     </TooltipTrigger>
