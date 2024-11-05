@@ -13,19 +13,24 @@ import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
 import {user} from "@/db/schema";
+import { useRouter } from "next/navigation";
+import { Loader2 } from 'lucide-react';
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
   users: typeof user.$inferSelect[]
 }
 
-const TicketStatus = [ "Open", "In Progress", "Closed"];
-const TicketSLA = [ "Low", "Medium", "High"];
+const TicketState = [ "Abierto", "En Progreso", "Cerrado"];
+const TicketSLA = [ "SLA Bajo", "SLA Medio", "SLA Alto"];
+const TicketCategory = ["Correos electrónicos.", "Conexión a Internet.", "Mantenimiento de equipos", "Utilización de programas.", "Problemas con Dispositivos."]
 
 export default function NewTicketDialog({ children, users }: NewTicketDialogProps) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,6 +51,10 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
       if (!response.ok){
         setError(data.message);
       }
+
+      setOpen(false);
+      router.refresh();
+
     } catch (err: unknown) {
       if (err instanceof Error){
         setError(err.message);
@@ -58,36 +67,36 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Ticket</DialogTitle>
-          <DialogDescription>Create a new ticket manually.</DialogDescription>
+          <DialogTitle>Nuevo Ticket</DialogTitle>
+          <DialogDescription>Crear un nuevo ticket manualmente.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+              <Label htmlFor="text" className="text-right">
+                Título de Ticket
               </Label>
               <Input
-                name="name"
+                name="title"
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="text" className="text-right">
-                Status
+                Estado
               </Label>
-              <Select name="status">
+              <Select name="state">
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select status"/>
+                  <SelectValue placeholder="Seleccionar estado" />
                 </SelectTrigger>
                 <SelectContent>
-                  {TicketStatus.map((status, index) => (
+                  {TicketState.map((status, index) => (
                     <SelectItem key={index} value={status}> {status} </SelectItem>
                   ))}
                 </SelectContent>
@@ -95,11 +104,11 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="text" className="text-right">
-                Priority
+                SLA
               </Label>
-              <Select name="priority">
+              <Select name="sla">
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select priority"/>
+                  <SelectValue placeholder="Seleccionar SLA" />
                 </SelectTrigger>
                 <SelectContent>
                   {TicketSLA.map((priority, index) => (
@@ -110,11 +119,26 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="text" className="text-right">
-                Assignee
+                Categoría
               </Label>
-              <Select name="assignee">
+              <Select name="category">
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select assignee"/>
+                  <SelectValue placeholder="Seleccionar categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TicketCategory.map((category, index) => (
+                    <SelectItem key={index} value={category}> {category} </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="text" className="text-right">
+                Asignación
+              </Label>
+              <Select name="userId">
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Asignar usuario" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -127,7 +151,15 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create</Button>
+            {error && <p className="text-red-500">{error}</p>}
+            {loading ? (
+              <Button disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creando...
+              </Button>
+            ) : (
+              <Button type="submit">Crear</Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
