@@ -15,6 +15,12 @@ export default function MainNav() {
       >
         Tickets
       </Link>
+      <Link
+        href="/users"
+        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      >
+        Usuarios
+      </Link>
     </nav>
   )
 }
