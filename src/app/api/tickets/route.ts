@@ -5,6 +5,16 @@ import { eq } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic'; // defaults to auto
 
+export const selectTicketsSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  state: z.string(),
+  sla: z.string(),
+  category: z.string(),
+  assignee: z.string(),
+  created: z.string(),
+});
+
 export async function GET() {
   const ticket = await db
     .select({
@@ -44,9 +54,9 @@ export async function POST(request: Request) {
   });
 
   if (!validatedFields.success){
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
+    return Response.json({
+      error: validatedFields.error.flatten().fieldErrors,
+    });
   }
 
   const categoryIdResult = await db.select({
