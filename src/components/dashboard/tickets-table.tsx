@@ -1,4 +1,5 @@
 "use client"
+import { z } from "zod"
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
@@ -9,37 +10,33 @@ import {Card} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {FileText, Pencil, Plus, Trash2} from "lucide-react";
 import NewTicketDialog from "@/components/dashboard/new-ticket-dialog";
-import type {InferSelectModel} from "drizzle-orm";
-import {user} from "@/db/schema";
-
-type Ticket = {
-  id: number
-  title: string
-  status: string
-  priority: string
-  assignee: string
-  created: string
-}
+import type { InferSelectModel } from "drizzle-orm";
+import { selectTicketsSchema } from '@/app/api/tickets/route';
+import { user } from "@/db/schema";
 
 type TicketsTableProps = {
-  tickets: Ticket[],
+  tickets: z.infer<typeof selectTicketsSchema>[],
   users: InferSelectModel<typeof user>[]
 }
+
+const TicketState = [ "Estado", "Abierto", "En Progreso", "Cerrado"];
+const TicketSLA = [ "SLA", "SLA Bajo", "SLA Medio", "SLA Alto"];
+const TicketCategory = ["Correos electrónicos.", "Conexión a Internet.", "Mantenimiento de equipos", "Utilización de programas.", "Problemas con Dispositivos."]
 
 export default function TicketsTable({ tickets, users }: TicketsTableProps) {
 
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("All")
-  const [priorityFilter, setPriorityFilter] = useState("All")
+  const [stateFilter, setstateFilter] = useState("Estado")
+  const [slaFilter, setSlaFilter] = useState("SLA")
 
   const filteredTickets = tickets.filter((ticket) => {
     return (
       ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "All" || ticket.status === statusFilter) &&
-      (priorityFilter === "All" || ticket.priority === priorityFilter) ||
+      (stateFilter === "Estado" || ticket.state === stateFilter) &&
+      (slaFilter === "SLA" || ticket.sla === slaFilter) ||
       ticket.assignee.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "All" || ticket.status === statusFilter) &&
-      (priorityFilter === "All" || ticket.priority === priorityFilter)
+      (stateFilter === "Estado" || ticket.state === stateFilter) &&
+      (slaFilter === "SLA" || ticket.sla === slaFilter)
     )
   })
 
@@ -48,36 +45,34 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
       <div className="flex flex-wrap gap-4 xs:flex-row">
         <div className="flex-grow max-w-md">
           <Input
-            placeholder="Search tickets..."
+            placeholder="Buscar tickets..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={stateFilter} onValueChange={setstateFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by status"/>
+            <SelectValue placeholder="Filtrar por estado"/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All Statuses</SelectItem>
-            <SelectItem value="Open">Open</SelectItem>
-            <SelectItem value="In Progress">In Progress</SelectItem>
-            <SelectItem value="Closed">Closed</SelectItem>
+            {TicketState.map((state) => (
+              <SelectItem key={state} value={state}>{state}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+        <Select value={slaFilter} onValueChange={setSlaFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by priority"/>
+            <SelectValue placeholder="Filtrar por SLA"/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All Priorities</SelectItem>
-            <SelectItem value="High">High</SelectItem>
-            <SelectItem value="Medium">Medium</SelectItem>
-            <SelectItem value="Low">Low</SelectItem>
+            {TicketSLA.map((sla) => (
+              <SelectItem key={sla} value={sla}>{sla}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <NewTicketDialog users={users}>
           <Button>
-            <Plus className="mr-2 h-4 w-4"/> New Ticket
+            <Plus className="mr-2 h-4 w-4"/> Nuevo Ticket
           </Button>
         </NewTicketDialog>
       </div>
@@ -85,72 +80,54 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Priority</TableHead>
-            <TableHead>Assignee</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead>Título</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead>Prioridad</TableHead>
+            <TableHead>Categoría</TableHead>
+            <TableHead>Asignación</TableHead>
+            <TableHead>Fecha</TableHead>
+            <TableHead>Acción</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredTickets.map((ticket) => (
-            <TableRow key={ticket.id} className="text-lg">
+            <TableRow key={ticket.id} >
               <TableCell>{ticket.id}</TableCell>
               <TableCell>{ticket.title}</TableCell>
               <TableCell>
-                <Badge
-                  variant={
-                    ticket.status === "Open"
-                      ? "destructive"
-                      : ticket.status === "In Progress"
-                        ? "default"
-                        : "secondary"
-                  }
-                >
-                  {ticket.status}
-                </Badge>
+                <Badge>{ticket.state}</Badge>
               </TableCell>
               <TableCell>
-                <Badge
-                  variant={
-                    ticket.priority === "High"
-                      ? "destructive"
-                      : ticket.priority === "Medium"
-                        ? "default"
-                        : "secondary"
-                  }
-                >
-                  {ticket.priority}
-                </Badge>
+                <Badge>{ticket.sla}</Badge>
               </TableCell>
+              <TableCell>{ticket.category}</TableCell>
               <TableCell>{ticket.assignee}</TableCell>
-              <TableCell>{ticket.created.split('T')[0]}</TableCell>
+              <TableCell>{ticket.created.split(' ')[0]}</TableCell>
               <TableCell>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild className="mr-2">
-                      <Button size="icon" className="h-7 w-7">
-                        <FileText className="h-5 w-5"/>
+                      <Button size="icon" className="h-6 w-6">
+                        <FileText className="h-4 w-4"/>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>View Ticket</TooltipContent>
+                    <TooltipContent>Ver Ticket</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild className="mr-2">
-                      <Button size="icon" className="h-7 w-7">
-                        <Pencil className="h-5 w-5"/>
+                      <Button size="icon" className="h-6 w-6">
+                        <Pencil className="h-4 w-4"/>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Edit Ticket</TooltipContent>
+                    <TooltipContent>Editar Ticket</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button size="icon" className="h-7 w-7" variant="destructive">
-                        <Trash2 className="h-5 w-5"/>
+                      <Button size="icon" className="h-6 w-6" variant="destructive">
+                        <Trash2 className="h-4 w-4"/>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Delete Ticket</TooltipContent>
+                    <TooltipContent>Borrar Ticket</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </TableCell>
