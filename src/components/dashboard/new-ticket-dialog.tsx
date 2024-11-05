@@ -13,7 +13,6 @@ import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
 import {user} from "@/db/schema";
-import { createTicket } from "@/actions/tickets"
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
@@ -21,13 +20,42 @@ type NewTicketDialogProps = {
 }
 
 const TicketStatus = [ "Open", "In Progress", "Closed"];
-const TicketPriority = [ "Low", "Medium", "High"];
+const TicketSLA = [ "Low", "Medium", "High"];
 
 export default function NewTicketDialog({ children, users }: NewTicketDialogProps) {
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState("");
-  const [priority, setPriority] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+
+    try {
+      const response = await fetch("/api/tickets", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok){
+        setError(data.message);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error){
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Dialog>
@@ -39,7 +67,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
           <DialogTitle>New Ticket</DialogTitle>
           <DialogDescription>Create a new ticket manually.</DialogDescription>
         </DialogHeader>
-        <form action={createTicket}>
+        <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -47,8 +75,6 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               </Label>
               <Input
                 name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
                 className="col-span-3"
               />
             </div>
@@ -56,7 +82,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Status
               </Label>
-              <Select value={status} onValueChange={setStatus} name="status">
+              <Select name="status">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select status"/>
                 </SelectTrigger>
@@ -71,12 +97,12 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Priority
               </Label>
-              <Select value={priority} onValueChange={setPriority} name="priority">
+              <Select name="priority">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select priority"/>
                 </SelectTrigger>
                 <SelectContent>
-                  {TicketPriority.map((priority, index) => (
+                  {TicketSLA.map((priority, index) => (
                     <SelectItem key={index} value={priority}> {priority} </SelectItem>
                   ))}
                 </SelectContent>
@@ -86,7 +112,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Assignee
               </Label>
-              <Select value={assignee} onValueChange={setAssignee} name="assignee">
+              <Select name="assignee">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select assignee"/>
                 </SelectTrigger>
