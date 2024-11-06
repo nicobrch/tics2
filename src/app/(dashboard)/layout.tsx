@@ -3,6 +3,7 @@ import Navbar from "@/components/navigation/navbar";
 import type {Metadata, Viewport} from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -39,7 +40,9 @@ export default async function RootLayout({
         <section>
           <Navbar/>
         </section>
-        <main className="container mx-auto">{children}</main>
+        <main className="container mx-auto">
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </main>
       </ThemeProvider>
       </body>
     </html>

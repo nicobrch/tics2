@@ -1,25 +1,5 @@
 import { pgTable, text, timestamp, serial, integer, boolean} from "drizzle-orm/pg-core"
 
-export const user = pgTable("user", {
-	id: text("id").primaryKey(),
-	name: text('name').notNull(),
-	email: text('email').notNull().unique(),
-	emailVerified: boolean('emailVerified').notNull(),
-	image: text('image'),
-	phone: integer("phone"),
-	roleId: integer("roleId").notNull().references(() => roles.id),
-	createdAt: timestamp('createdAt').notNull(),
-	updatedAt: timestamp('updatedAt').notNull()
-});
-
-export const session = pgTable("session", {
-	id: text("id").primaryKey(),
-	expiresAt: timestamp('expiresAt').notNull(),
-	ipAddress: text('ipAddress'),
-	userAgent: text('userAgent'),
-	userId: text('userId').notNull().references(()=> user.id)
-});
-
 export const account = pgTable("account", {
 	id: text("id").primaryKey(),
 	accountId: text('accountId').notNull(),
@@ -30,6 +10,30 @@ export const account = pgTable("account", {
 	idToken: text('idToken'),
 	expiresAt: timestamp('expiresAt'),
 	password: text('password')
+});
+
+export const user = pgTable("user", {
+	id: text("id").primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	emailVerified: boolean('emailVerified').notNull(),
+	image: text('image'),
+	phone: text("phone"),
+	createdAt: timestamp('createdAt').notNull(),
+	updatedAt: timestamp('updatedAt').notNull(),
+	role: text('role'),
+	banned: boolean('banned'),
+	banReason: text('banReason'),
+	banExpires: integer('banExpires')
+});
+
+export const session = pgTable("session", {
+	id: text("id").primaryKey(),
+	expiresAt: timestamp('expiresAt').notNull(),
+	ipAddress: text('ipAddress'),
+	userAgent: text('userAgent'),
+	userId: text('userId').notNull().references(()=> user.id),
+	impersonatedBy: text('impersonatedBy').references(()=> user.id)
 });
 
 export const verification = pgTable("verification", {
@@ -48,12 +52,6 @@ export const tickets = pgTable("tickets", {
 	categoryId: integer("categoryId").notNull().references(() => categories.id),
 	stateId: integer("stateId").notNull().references(() => states.id),
 	slaId: integer("slaId").notNull().references(() => sla.id),
-});
-
-export const roles = pgTable("roles", {
-	id: serial("id").primaryKey(),
-	createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow().notNull(),
-	name: text("name").notNull(),
 });
 
 export const categories = pgTable("categories", {
