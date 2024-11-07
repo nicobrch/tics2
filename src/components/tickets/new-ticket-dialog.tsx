@@ -7,18 +7,18 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import React, {useState} from "react";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Button} from "@/components/ui/button";
-import {user} from "@/db/schema";
+import React, { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2 } from 'lucide-react';
+import type { User } from "@/types/user";
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
-  users: typeof user.$inferSelect[]
+  users: User[]
 }
 
 const TicketState = [ "Abierto", "En Progreso", "Cerrado"];
@@ -29,7 +29,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [, setSuccess] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -143,7 +143,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
                 <SelectContent>
                   <SelectGroup>
                     {users.map((user, index) => (
-                      <SelectItem key={index} value={user.id}> {user.name} </SelectItem>
+                      <SelectItem key={index} value={user.email}> {user.name} </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>

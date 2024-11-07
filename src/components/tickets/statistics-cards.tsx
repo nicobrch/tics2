@@ -1,14 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClockIcon, TicketIcon, UsersIcon } from "lucide-react";
-
-type Ticket = {
-  id: number
-  title: string
-  status: string
-  priority: string
-  assignee: string
-  created: string
-}
+import type { Ticket } from '@/types/ticket';
 
 type StatisticsCardsProps = {
   tickets: Ticket[]
@@ -34,7 +26,7 @@ export default async function StatisticsCards({ tickets }: StatisticsCardsProps)
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {tickets.filter((ticket: { status: string; }) => ticket.status === "Open").length}
+            {tickets.filter((ticket: { state: string; }) => ticket.state === "Abierto").length}
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400">+12% from last week</p>
         </CardContent>

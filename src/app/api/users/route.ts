@@ -1,40 +1,23 @@
-import { z } from "zod"
 import { db } from "@/db";
-import { user } from "@/db/schema";
+import { users, roles } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { admin } from '@/lib/auth-client';
+import { createUserSchema } from "@/types/user";
 
-export const dynamic = 'force-dynamic'; // defaults to auto
-
-export const getUsersSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string(),
-  phone: z.number(),
-  image: z.string(),
-  rol: z.string(),
-});
+export const revalidate = 60;
 
 export async function GET() {
-  const users = await db
+  const response = await db
     .select({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      image: user.image,
-      rol: user.role,
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      phone: users.phone,
+      rol: roles.name,
     })
-    .from(user)
-  return Response.json(users);
+    .from(users)
+    .leftJoin(roles, eq(users.roleId, roles.id))
+  return Response.json(response);
 }
-
-const createUserSchema = z.object({
-  name: z.string(),
-  password: z.string(),
-  email: z.string(),
-  role: z.literal("user") || z.literal("admin"),
-});
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -51,13 +34,6 @@ export async function POST(request: Request) {
       error: validatedFields.error.flatten().fieldErrors,
     });
   }
-
-  await admin.createUser({
-    name: validatedFields.data.name,
-    email: validatedFields.data.email,
-    password: validatedFields.data.password,
-    role: validatedFields.data.role,
-  })
 
   return Response.json({ message: "User created successfully" });
 }
