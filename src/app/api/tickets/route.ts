@@ -3,8 +3,6 @@ import { tickets, users, states, categories, sla } from "@/db/schema"
 import { eq } from "drizzle-orm";
 import { createTicketSchema } from '@/types/ticket';
 
-export const revalidate = 60;
-
 export async function GET() {
     const ticket = await db
         .select({

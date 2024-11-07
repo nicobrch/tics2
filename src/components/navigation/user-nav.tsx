@@ -7,23 +7,24 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import { getSessionUser } from '@/lib/session';
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import LogoutButton from '@/components/navigation/logout-button';
 import ThemeSwitch from '@/components/navigation/theme-switch';
 import Link from 'next/link';
 import { User, Settings } from 'lucide-react';
+import type { User as UserSchema } from "@/types/user";
 
-export default async function UserNav() {
-    const user = await getSessionUser();
-    if (!user) return null;
+type UserNavProps = {
+    user: UserSchema,
+}
+
+export default async function UserNav({user}: UserNavProps) {
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.image} alt="User"/>
                         <AvatarFallback>{user.name.slice(0,2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                 </Button>

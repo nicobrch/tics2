@@ -17,7 +17,7 @@ export default async function DashboardLayout({
     return (
         <>
             <section>
-                <Navbar/>
+                <Navbar user={user}/>
             </section>
             <NuqsAdapter>
                 <main className="mx-auto container">
