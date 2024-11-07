@@ -11,20 +11,22 @@ import {FileText, Pencil, Plus, Trash2} from "lucide-react";
 import NewTicketDialog from "@/components/tickets/new-ticket-dialog";
 import type { Ticket } from "@/types/ticket";
 import type { User } from "@/types/user";
+import type { PropertiesResponse } from "@/app/api/tickets/properties/route";
 
 type TicketsTableProps = {
     tickets: Ticket[],
-    users: User[]
+    users: User[],
+    properties: PropertiesResponse
 }
 
-const TicketState = [ "Estado", "Abierto", "En Progreso", "Cerrado"];
-const TicketSLA = [ "SLA", "SLA Bajo", "SLA Medio", "SLA Alto"];
-
-export default function TicketsTable({ tickets, users }: TicketsTableProps) {
+export default function TicketsTable({ tickets, users, properties}: TicketsTableProps) {
 
     const [searchTerm, setSearchTerm] = useState("")
     const [stateFilter, setstateFilter] = useState("Estado")
     const [slaFilter, setSlaFilter] = useState("SLA")
+
+    const TicketState = ["Estado", ...properties.states.map((state) => state.name)];
+    const TicketSLA = ["SLA", ...properties.sla.map((sla) => sla.name)];
 
     const badgeVariant = (input: string) => {
         if(input === "SLA Bajo" || input === "Abierto") {
@@ -64,7 +66,7 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
                     </SelectTrigger>
                     <SelectContent>
                         {TicketState.map((state) => (
-                            <SelectItem key={state} value={state}>{state}</SelectItem>
+                            <SelectItem key={state} value={state} defaultValue={"Estado"}>{state}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -74,11 +76,11 @@ export default function TicketsTable({ tickets, users }: TicketsTableProps) {
                     </SelectTrigger>
                     <SelectContent>
                         {TicketSLA.map((sla) => (
-                            <SelectItem key={sla} value={sla}>{sla}</SelectItem>
+                            <SelectItem key={sla} value={sla} defaultValue={"SLA"}>{sla}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
-                <NewTicketDialog users={users}>
+                <NewTicketDialog users={users} properties={properties}>
                     <Button>
                         <Plus className="mr-2 h-4 w-4"/> Nuevo Ticket
                     </Button>

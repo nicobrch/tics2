@@ -15,22 +15,24 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2 } from 'lucide-react';
 import type { User } from "@/types/user";
+import {PropertiesResponse} from "@/app/api/tickets/properties/route";
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
-  users: User[]
+  users: User[],
+  properties: PropertiesResponse,
 }
 
-const TicketState = [ "Abierto", "En Progreso", "Cerrado"];
-const TicketSLA = [ "SLA Bajo", "SLA Medio", "SLA Alto"];
-const TicketCategory = ["Correos electrónicos.", "Conexión a Internet.", "Mantenimiento de equipos", "Utilización de programas.", "Problemas con Dispositivos."]
-
-export default function NewTicketDialog({ children, users }: NewTicketDialogProps) {
+export default function NewTicketDialog({ children, users, properties }: NewTicketDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [, setSuccess] = useState(false);
   const router = useRouter();
+
+  const TicketState = properties.states.map((state) => state.name);
+  const TicketSLA = properties.sla.map((sla) => sla.name);
+  const TicketCategory = properties.categories.map((category) => category.name);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -136,7 +138,7 @@ export default function NewTicketDialog({ children, users }: NewTicketDialogProp
               <Label htmlFor="text" className="text-right">
                 Asignación
               </Label>
-              <Select name="userId">
+              <Select name="userEmail">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Asignar usuario" />
                 </SelectTrigger>
