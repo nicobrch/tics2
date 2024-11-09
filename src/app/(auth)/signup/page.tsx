@@ -4,29 +4,30 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { signIn } from '@/app/auth';
+import { createUser } from '@/app/db';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-    title: "Iniciar Sesión",
+    title: "Registrarse",
 };
 
-export default async function Login() {
+export default async function SignUp() {
 
     return (
         <div className="flex items-center justify-center min-h-screen">
             <Card className="w-full max-w-md mx-auto">
                 <CardHeader>
-                    <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
-                    <CardDescription>Ingresa tus credenciales de acceso.</CardDescription>
+                    <CardTitle className="text-2xl font-bold">Crear una Cuenta</CardTitle>
+                    <CardDescription>Crea tu cuenta con tu correo y contraseña.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4" action={async (formData: FormData) => {
                         'use server';
-                        await signIn('credentials', {
-                            email: formData.get('email') as string,
-                            password: formData.get('password') as string,
-                            redirectTo: "/",
-                        })
+                        const email = formData.get('email') as string;
+                        const password = formData.get('password') as string;
+                        const role = formData.get('role') as string;
+                        await createUser(email, password, role);
+                        redirect('/login');
                     }}>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
@@ -48,8 +49,18 @@ export default async function Login() {
                                 required
                             />
                         </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Rol</Label>
+                            <Input
+                                id="role"
+                                name="role"
+                                type="role"
+                                placeholder="Ingresa rol de usuario"
+                                required
+                            />
+                        </div>
                         <Button className="w-full" type="submit">
-                            Ingresar
+                            Registrarse
                         </Button>
                     </form>
                 </CardContent>
