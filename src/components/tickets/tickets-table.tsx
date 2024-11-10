@@ -9,6 +9,7 @@ import {Card} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {FileText, Pencil, Plus, Trash2} from "lucide-react";
 import NewTicketDialog from "@/components/tickets/new-ticket-dialog";
+import Link from "next/link";
 import type { Ticket } from "@/types/ticket";
 import type { User } from "@/types/user";
 import type { PropertiesResponse } from "@/app/api/tickets/properties/route";
@@ -117,8 +118,10 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild className="mr-2">
-                                            <Button size="icon" className="h-6 w-6">
-                                                <FileText className="h-4 w-4"/>
+                                            <Button size="icon" className="h-6 w-6" asChild>
+                                                <Link href={`/tickets/${ticket.id}`}>
+                                                    <FileText className="h-4 w-4"/>
+                                                </Link>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>Ver Ticket</TooltipContent>
@@ -129,7 +132,7 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
                                                 <Pencil className="h-4 w-4"/>
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>Editar Ticket</TooltipContent>
+                                        <TooltipContent className="bg-luxury text-luxury-foreground">Editar Ticket</TooltipContent>
                                     </Tooltip>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -137,7 +140,7 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
                                                 <Trash2 className="h-4 w-4"/>
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>Borrar Ticket</TooltipContent>
+                                        <TooltipContent className="bg-destructive text-destructive-foreground">Borrar Ticket</TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
                             </TableCell>
