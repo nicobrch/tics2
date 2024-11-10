@@ -1,5 +1,5 @@
-import { db } from "@/db"
-import { tickets, users, states, categories, sla } from "@/db/schema"
+import { db } from "@/app/db"
+import { tickets, users, states, categories, sla } from "@/app/schema"
 import { eq } from "drizzle-orm";
 import { createTicketSchema } from '@/types/ticket';
 

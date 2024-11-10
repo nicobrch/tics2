@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { states, categories, sla } from "@/db/schema";
+import { db } from "@/app/db";
+import { states, categories, sla } from "@/app/schema";
 
 export type PropertiesResponse = {
   states: {
