@@ -8,17 +8,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
-import LogoutButton from '@/components/navigation/logout-button';
+import LogoutForm from '@/components/auth/logout-form';
 import ThemeSwitch from '@/components/navigation/theme-switch';
 import Link from 'next/link';
 import { User, Settings } from 'lucide-react';
-import type { User as UserSchema } from "@/types/user";
+import { auth } from "@/app/auth";
 
-type UserNavProps = {
-    user: UserSchema,
-}
-
-export default async function UserNav({user}: UserNavProps) {
+export default async function UserNav() {
+    const session = await auth();
+    if (!session) return null;
+    const user = session.user;
 
     return (
         <DropdownMenu>
@@ -53,7 +52,7 @@ export default async function UserNav({user}: UserNavProps) {
                     <ThemeSwitch />
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <LogoutButton />
+                        <LogoutForm />
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

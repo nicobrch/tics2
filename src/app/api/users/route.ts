@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { users, roles } from "@/db/schema";
+import { db } from "@/app/db";
+import { users, roles } from "@/app/schema";
 import { eq } from "drizzle-orm";
 import { createUserSchema } from "@/types/user";
 
