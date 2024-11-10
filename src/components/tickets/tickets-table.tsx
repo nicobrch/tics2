@@ -125,7 +125,7 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
                                     </Tooltip>
                                     <Tooltip>
                                         <TooltipTrigger asChild className="mr-2">
-                                            <Button size="icon" className="h-6 w-6" variant="calm">
+                                            <Button size="icon" className="h-6 w-6" variant="luxury">
                                                 <Pencil className="h-4 w-4"/>
                                             </Button>
                                         </TooltipTrigger>

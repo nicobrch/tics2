@@ -4,7 +4,7 @@ import UserNav from "@/components/navigation/user-nav";
 export default async function Navbar() {
 
     return (
-        <div className="hidden flex-col bg-background md:flex">
+        <div className="hidden flex-col bg-primary md:flex">
             <div className="border-b">
                 <div className="flex h-16 items-center px-4 container mx-auto">
                     <MainNav/>
