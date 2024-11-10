@@ -18,7 +18,7 @@ export default function MainNav() {
                     key={href}
                     href={href}
                     className={`text-sm font-medium transition-colors ${
-                        pathname === href ? "text-primary-foreground" : "hover:text-primary-foreground"
+                        pathname.startsWith(href) ? "text-primary-foreground" : "hover:text-primary-foreground"
                     }`}
                 >
                     {label}
