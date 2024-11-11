@@ -3,7 +3,7 @@ import { users, roles } from "@/app/schema";
 import { eq } from "drizzle-orm";
 import { createUserSchema } from "@/types/user";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const response = await db

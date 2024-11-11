@@ -1,5 +1,4 @@
 "use client"
-import { z } from "zod"
 import {Input} from "@/components/ui/input";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Tooltip, TooltipContent, TooltipTrigger, TooltipProvider} from "@/components/ui/tooltip";
@@ -7,45 +6,45 @@ import { useQueryState } from "nuqs";
 import {Card} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {FileText, Pencil, Trash2} from "lucide-react";
-import { getUsersSchema } from '@/app/api/users/route';
+import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from "react";
 
-type UsersTableProps = {
-  users: z.infer<typeof getUsersSchema>[]
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function UsersTable({users}: { users: any }) {
 
-export default function UsersTable({ users }: UsersTableProps) {
+    const [searchTerm, setSearchTerm] = useQueryState("name", {defaultValue: ""})
 
-  const [searchTerm, setSearchTerm] = useQueryState("name", { defaultValue: "" })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredUsers = users.filter((user: { name: string; }) => {
+        return (
+            user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    })
 
-  const filteredUsers = users.filter((user) => {
     return (
-      user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })
-
-  return (
-    <Card className="space-y-4 p-4">
-      <div className="flex flex-wrap gap-4 xs:flex-row">
-        <div className="flex-grow max-w-md">
-          <Input
-            placeholder="Buscar usuarios..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Teléfono</TableHead>
-            <TableHead>Rol</TableHead>
-            <TableHead>Acción</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredUsers.map((user) => (
+        <Card className="space-y-4 p-4">
+            <div className="flex flex-wrap gap-4 xs:flex-row">
+                <div className="flex-grow max-w-md">
+                    <Input
+                        placeholder="Buscar usuarios..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Nombre</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Teléfono</TableHead>
+                        <TableHead>Rol</TableHead>
+                        <TableHead>Acción</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {filteredUsers.map(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (user: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; email: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; phone: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; rol: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }) => (
             <TableRow key={user.id} >
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
