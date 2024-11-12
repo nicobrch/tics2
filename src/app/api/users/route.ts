@@ -15,7 +15,7 @@ export async function GET() {
       rol: roles.name,
     })
     .from(users)
-    .leftJoin(roles, eq(users.roleId, roles.id))
+    .leftJoin(roles, eq(users.roleId, roles.id));
   return Response.json(response);
 }
 
