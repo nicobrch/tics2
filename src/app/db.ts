@@ -3,11 +3,12 @@ import { eq } from "drizzle-orm";
 import { users, roles } from '@/app/schema';
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
+import { cache } from "react";
 
 const client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 export const db = drizzle(client);
 
-export async function getUser(email: string) {
+export const getUser = cache(async (email: string) => {
     return db.select({
         id: users.id,
         name: users.name,
@@ -16,7 +17,7 @@ export async function getUser(email: string) {
         phone: users.phone,
         role: roles.name,
     }).from(users).leftJoin(roles, eq(users.roleId, roles.id)).where(eq(users.email, email));
-}
+});
 
 export async function createUser(email: string, password: string, role: string) {
     const salt = genSaltSync(10);
