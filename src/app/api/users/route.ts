@@ -3,7 +3,7 @@ import { users, roles } from "@/app/schema";
 import { eq } from "drizzle-orm";
 import { createUserSchema } from "@/types/user";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const response = await db
@@ -15,7 +15,7 @@ export async function GET() {
       rol: roles.name,
     })
     .from(users)
-    .leftJoin(roles, eq(users.roleId, roles.id))
+    .leftJoin(roles, eq(users.roleId, roles.id));
   return Response.json(response);
 }
 

@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const userSchema = z.object({
+    id: z.number(),
     name: z.string(),
     email: z.string(),
-    role: z.string(),
+    rol: z.string(),
     phone: z.string().optional(),
 });
 
@@ -14,4 +15,4 @@ export const createUserSchema = z.object({
     role: z.string(),
 })
 
-export type User = z.infer<typeof userSchema>;
+export type UserSchema = z.infer<typeof userSchema>;

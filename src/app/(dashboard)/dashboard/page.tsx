@@ -1,5 +1,6 @@
-import StatisticsCards from '@/components/tickets/statistics-cards';
+import StatisticsCards from '@/components/dashboard/statistics-cards';
 import TicketsTable from '@/components/tickets/tickets-table';
+import * as React from "react";
 
 export default async function Page() {
     const ticketsData = await fetch("http://localhost:3000/api/tickets",
@@ -14,17 +15,13 @@ export default async function Page() {
     const properties = await ticketProperties.json();
 
     return (
-        <div className="flex-1 p-4 md:p-6">
+        <div className="flex-1 p-4 gap-4 md:p-6">
+            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
             <section>
-                <h1 className="font-bold text-xl mb-2"> Estadísticas </h1>
-                <StatisticsCards tickets={tickets} />
+                <StatisticsCards tickets={tickets}/>
             </section>
             <section>
-                <h1 className="font-bold text-xl mb-2"> Últimos tickets </h1>
                 <TicketsTable tickets={tickets} users={users} properties={properties}/>
-            </section>
-            <section className="mt-4">
-                <h1 className="font-bold text-xl mb-2"> Gráficos </h1>
             </section>
         </div>
     )

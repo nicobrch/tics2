@@ -1,26 +1,29 @@
+"use client"
+
 import Link from 'next/link'
+import { usePathname } from "next/navigation";
 
 export default function MainNav() {
-  return (
-    <nav className="flex items-center space-x-4 mx-6 lg:space-x-6">
-      <Link
-        href="/dashboard"
-        className="text-sm font-medium transition-colors hover:text-primary"
-      >
-        Dashboard
-      </Link>
-      <Link
-        href="/tickets"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Tickets
-      </Link>
-      <Link
-        href="/users"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Usuarios
-      </Link>
-    </nav>
-  )
+    const pathname = usePathname();
+    const navItems = [
+        { href: "/dashboard", label: "Dashboard" },
+        { href: "/tickets", label: "Tickets" },
+        { href: "/users", label: "Usuarios" },
+    ];
+
+    return (
+        <nav className="flex items-center space-x-4 mx-6 lg:space-x-6 text-primary-foreground/80">
+            {navItems.map(({ href, label }) => (
+                <Link
+                    key={href}
+                    href={href}
+                    className={`text-sm font-medium transition-colors ${
+                        pathname.startsWith(href) ? "text-primary-foreground" : "hover:text-primary-foreground"
+                    }`}
+                >
+                    {label}
+                </Link>
+            ))}
+        </nav>
+    )
 }
