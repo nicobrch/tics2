@@ -14,12 +14,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2 } from 'lucide-react';
-import type { User } from "@/types/user";
+import type { UserSchema } from "@/types/user";
 import {PropertiesResponse} from "@/app/api/tickets/properties/route";
 
 type NewTicketDialogProps = {
   children: Readonly<React.ReactNode>,
-  users: User[],
+  users: UserSchema[],
   properties: PropertiesResponse,
 }
 

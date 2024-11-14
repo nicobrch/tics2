@@ -11,12 +11,12 @@ import {FileText, Pencil, Plus, Trash2} from "lucide-react";
 import NewTicketDialog from "@/components/tickets/new-ticket-dialog";
 import Link from "next/link";
 import type { Ticket } from "@/types/ticket";
-import type { User } from "@/types/user";
+import type { UserSchema } from "@/types/user";
 import type { PropertiesResponse } from "@/app/api/tickets/properties/route";
 
 type TicketsTableProps = {
     tickets: Ticket[],
-    users: User[],
+    users: UserSchema[],
     properties: PropertiesResponse
 }
 
@@ -52,7 +52,7 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
     })
 
     return (
-        <Card className="space-y-4 p-4">
+        <Card className="flex-1 space-y-4 p-4">
             <div className="flex flex-wrap gap-4 xs:flex-row">
                 <div className="flex-grow max-w-md">
                     <Input
@@ -140,7 +140,7 @@ export default function TicketsTable({ tickets, users, properties}: TicketsTable
                                                 <Trash2 className="h-4 w-4"/>
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent className="bg-destructive text-destructive-foreground">Borrar Ticket</TooltipContent>
+                                        <TooltipContent className="bg-destructive text-destructive-foreground">Cerrar Ticket</TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
                             </TableCell>
